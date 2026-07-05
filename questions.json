@@ -1,0 +1,529 @@
+{
+  "formatVersion": 1,
+  "tdId": "r1.05-td7",
+  "tdLabel": "R1.05 — TD7",
+  "title": "Requêtes avec SQL",
+  "intro": "Formulez, en SQL, sur la base de données exemple, les requêtes d'interrogation suivantes.",
+  "database": {
+    "name": "voyages",
+    "schemaFile": "data/schema.sql",
+    "insertFile": "data/insert.sql"
+  },
+  "canon": {
+    "algo": "sha256",
+    "specVersion": 1
+  },
+  "generated": {
+    "at": "2026-07-05T20:16:37Z",
+    "documentsVersion": "v0.1.6"
+  },
+  "sections": [
+    {
+      "name": "Expression des projections et sélections",
+      "items": [
+        {
+          "type": "question",
+          "id": "q1",
+          "num": "1",
+          "statement": "Quelles sont les villes d'arrivée des voyages à destination du Maroc ?",
+          "expectedCols": 1,
+          "expectedRows": 5,
+          "expectedLabel": "1 attribut, 5 tuples",
+          "orderSensitive": false,
+          "hashesSorted": [
+            "cc4216bad9c89ffb2865bf73c2af459248855d02a8885ccd5cee5380c41086e7"
+          ],
+          "hashOrdered": null,
+          "difficulty": 1,
+          "tags": [
+            "projection",
+            "sélection"
+          ],
+          "sameAs": null
+        },
+        {
+          "type": "question",
+          "id": "q2",
+          "num": "2",
+          "statement": "Donnez les codes et libellés des options avec un libellé comportant le mot « Visite ».",
+          "expectedCols": 2,
+          "expectedRows": 2,
+          "expectedLabel": "2 attributs, 2 tuples",
+          "orderSensitive": false,
+          "hashesSorted": [
+            "66b547c0ea38162460fb64c53c86d0602cc2f8ba9e12b99ecaa5236bad5ce59d"
+          ],
+          "hashOrdered": null,
+          "difficulty": 1,
+          "tags": [
+            "sélection"
+          ],
+          "sameAs": null
+        },
+        {
+          "type": "question",
+          "id": "q3",
+          "num": "3",
+          "statement": "Donnez, triées par ordre chronologique, les dates de départ proposées pour le voyage d'identifiant 927 entre le 1er juin 2004 et le 30 juillet 2004.",
+          "expectedCols": 1,
+          "expectedRows": 4,
+          "expectedLabel": "1 attribut, 4 tuples",
+          "orderSensitive": true,
+          "hashesSorted": [
+            "776d828badc9ffbeab3ff5c581903afccb279617782bc3dce55bb399ba6d5357"
+          ],
+          "hashOrdered": "776d828badc9ffbeab3ff5c581903afccb279617782bc3dce55bb399ba6d5357",
+          "difficulty": 1,
+          "tags": [
+            "sélection",
+            "tri"
+          ],
+          "sameAs": null
+        },
+        {
+          "type": "question",
+          "id": "q4",
+          "num": "4",
+          "statement": "Donnez, triés par ordre décroissant du numéro de client, les numéros, noms, prénoms, code postaux et villes des clients n'habitant ni Paris ni Marseille.",
+          "expectedCols": 5,
+          "expectedRows": 8,
+          "expectedLabel": "5 attributs, 8 tuples",
+          "orderSensitive": true,
+          "hashesSorted": [
+            "fcf907b6c198908bf985888246401320efbdbbccaa1e66656befb85336d257c3"
+          ],
+          "hashOrdered": "b584680f0efddbe0e7a577a0c33133b4b4e7f025d6bbab540705276d4ae6cd65",
+          "difficulty": 1,
+          "tags": [
+            "projection",
+            "sélection",
+            "tri"
+          ],
+          "sameAs": null
+        },
+        {
+          "type": "question",
+          "id": "q5",
+          "num": "5",
+          "statement": "Quels sont les identifiants et noms des clients qui n’ont pas d’adresse enregistrée ?",
+          "expectedCols": 2,
+          "expectedRows": 7,
+          "expectedLabel": "2 attributs, 7 tuples",
+          "orderSensitive": false,
+          "hashesSorted": [
+            "964d984556ea6e51afc2f2a43d7a44f873efc38614da383c0d76dd59098e78b5"
+          ],
+          "hashOrdered": null,
+          "difficulty": 1,
+          "tags": [
+            "projection",
+            "null"
+          ],
+          "sameAs": null
+        }
+      ]
+    },
+    {
+      "name": "Expression des jointures",
+      "items": [
+        {
+          "type": "instruction",
+          "text": "Quand cela possible, formulez les requêtes suivantes de toutes les manières différentes."
+        },
+        {
+          "type": "question",
+          "id": "q6",
+          "num": "6",
+          "statement": "Donnez les identifiants des voyages pour lesquels le client Hubert Marin a fait une réservation.",
+          "expectedCols": 1,
+          "expectedRows": 2,
+          "expectedLabel": "1 attribut, 2 tuples",
+          "orderSensitive": false,
+          "hashesSorted": [
+            "2f941c1e8fdddcbe37131b5a0e380c8e602d43ab44b57a5ebd51537868cffd0d"
+          ],
+          "hashOrdered": null,
+          "difficulty": 2,
+          "tags": [
+            "jointure",
+            "imbrication",
+            "semi-jointure",
+            "exists"
+          ],
+          "sameAs": null
+        },
+        {
+          "type": "question",
+          "id": "q7",
+          "num": "7",
+          "statement": "Donnez les numéros des clients ainsi que les dates de réservation et villes d'arrivée des voyages réservés par des clients habitant Marseille.",
+          "expectedCols": 3,
+          "expectedRows": 15,
+          "expectedLabel": "3 attributs, 15 tuples",
+          "orderSensitive": false,
+          "hashesSorted": [
+            "80b3f177d26daa9e5490f22704a9232d28323b4a823af73e0b37196a81e44861"
+          ],
+          "hashOrdered": null,
+          "difficulty": 2,
+          "tags": [
+            "jointure",
+            "imbrication",
+            "semi-jointure",
+            "exists"
+          ],
+          "sameAs": null
+        },
+        {
+          "type": "question",
+          "id": "q8",
+          "num": "8",
+          "statement": "Quelles sont les libellés des options proposées pour le voyage d'identifiant 862 ?",
+          "expectedCols": 1,
+          "expectedRows": 2,
+          "expectedLabel": "1 attribut, 2 tuples",
+          "orderSensitive": false,
+          "hashesSorted": [
+            "6baf30713c0358d3cdfb64c96c96ba33457981e72acaaf7e50cfdd7fbad29ae2"
+          ],
+          "hashOrdered": null,
+          "difficulty": 2,
+          "tags": [
+            "jointure",
+            "imbrication",
+            "semi-jointure",
+            "exists"
+          ],
+          "sameAs": null
+        },
+        {
+          "type": "question",
+          "id": "q9",
+          "num": "9",
+          "statement": "Quels sont les libellés d’option proposées pour les voyages réservés par le client Thomas Jarolim ?",
+          "expectedCols": 1,
+          "expectedRows": 6,
+          "expectedLabel": "1 attribut, 6 tuples",
+          "orderSensitive": false,
+          "hashesSorted": [
+            "a251a1148adca513222893b724742bede6c3d1ba71063b157f935fd6fd9f08bc"
+          ],
+          "hashOrdered": null,
+          "difficulty": 3,
+          "tags": [
+            "jointure",
+            "imbrication",
+            "semi-jointure",
+            "exists"
+          ],
+          "sameAs": null
+        },
+        {
+          "type": "question",
+          "id": "q10",
+          "num": "10",
+          "statement": "Quels sont les noms, prénoms et villes des clients ayant réservé au moins un voyage partant de leur ville de résidence ?",
+          "expectedCols": 3,
+          "expectedRows": 16,
+          "expectedLabel": "3 attributs, 16 tuples",
+          "orderSensitive": false,
+          "hashesSorted": [
+            "defa2681e5f17e7ed66e4ee83159e4c39706106a11cd8eef1a3dd5b6c7ac476d"
+          ],
+          "hashOrdered": null,
+          "difficulty": 3,
+          "tags": [
+            "jointure",
+            "imbrication",
+            "semi-jointure",
+            "exists"
+          ],
+          "sameAs": null
+        }
+      ]
+    },
+    {
+      "name": "Formulation de calculs verticaux et horizontaux",
+      "items": [
+        {
+          "type": "instruction",
+          "text": "Formulez les requêtes suivantes en gérant les valeurs nulles pour les calculs horizontaux."
+        },
+        {
+          "type": "question",
+          "id": "q11",
+          "num": "11",
+          "statement": "Combien y a-t-il de réservations ?",
+          "expectedCols": 1,
+          "expectedRows": 1,
+          "expectedLabel": "1 attribut, 1 tuple (32)",
+          "orderSensitive": false,
+          "hashesSorted": [
+            "7e5cf75b1ebc0a9fa0f5aad66c441de55451271453e762fca3460bbb5e7de194"
+          ],
+          "hashOrdered": null,
+          "difficulty": 1,
+          "tags": [
+            "calcul-vertical"
+          ],
+          "sameAs": null
+        },
+        {
+          "type": "question",
+          "id": "q12",
+          "num": "12",
+          "statement": "Quelle est la durée moyenne des séjours au Kenya ?",
+          "expectedCols": 1,
+          "expectedRows": 1,
+          "expectedLabel": "1 attribut, 1 tuple (6.25)",
+          "orderSensitive": false,
+          "hashesSorted": [
+            "27a839bf36d86adec97f8ad054abe1d3e7be1d8f2f052b9a270d0195352166bb"
+          ],
+          "hashOrdered": null,
+          "difficulty": 1,
+          "tags": [
+            "calcul-vertical"
+          ],
+          "sameAs": null
+        },
+        {
+          "type": "question",
+          "id": "q13",
+          "num": "13",
+          "statement": "Combien y a-t-il de places réservées pour les voyages réservés d’identifiant 122 ?",
+          "expectedCols": 1,
+          "expectedRows": 1,
+          "expectedLabel": "1 attribut, 1 tuple (9)",
+          "orderSensitive": false,
+          "hashesSorted": [
+            "2ef2e6e28e13aaa61a8cae6b6b7038d13699e8171671af9f5a4986f013631c61"
+          ],
+          "hashOrdered": null,
+          "difficulty": 1,
+          "tags": [
+            "calcul-vertical"
+          ],
+          "sameAs": null
+        },
+        {
+          "type": "question",
+          "id": "q14",
+          "num": "14",
+          "statement": "Quel est le tarif de voyage le moins cher ?",
+          "expectedCols": 1,
+          "expectedRows": 1,
+          "expectedLabel": "1 attribut, 1 tuple (179)",
+          "orderSensitive": false,
+          "hashesSorted": [
+            "3701451170d8020c25447f82cff925fbce6c825db255b9a1513c6cdfa9b44bbf"
+          ],
+          "hashOrdered": null,
+          "difficulty": 1,
+          "tags": [
+            "calcul-vertical"
+          ],
+          "sameAs": null
+        },
+        {
+          "type": "question",
+          "id": "q15",
+          "num": "15",
+          "statement": "Donnez les dates de départ et les dates de retour pour les voyages réservés d’identifiant 122.",
+          "expectedCols": 2,
+          "expectedRows": 10,
+          "expectedLabel": "2 attributs, 10 tuples",
+          "orderSensitive": false,
+          "hashesSorted": [
+            "cce6633030734248975f4c961271f9d4812c26a8d1c8c2bd91891c559f08b0f9"
+          ],
+          "hashOrdered": null,
+          "difficulty": 2,
+          "tags": [
+            "jointure",
+            "calcul-horizontal"
+          ],
+          "sameAs": null
+        },
+        {
+          "type": "question",
+          "id": "q16",
+          "num": "16",
+          "statement": "Quels sont les identifiants, pays d’arrivée, villes d’arrivée et hôtels ainsi que leurs nombres d’étoiles des voyages pour lesquels le tarif est le plus faible ? Donnez deux formulations.",
+          "expectedCols": 5,
+          "expectedRows": 1,
+          "expectedLabel": "5 attributs, 1 tuple",
+          "orderSensitive": false,
+          "hashesSorted": [
+            "3affb5550ca6853b02cadd6618c2d5fec85f64c2a65e3e5927ac7bc5076c34d9"
+          ],
+          "hashOrdered": null,
+          "difficulty": 2,
+          "tags": [
+            "jointure",
+            "imbrication",
+            "calcul-vertical",
+            "extrémum"
+          ],
+          "sameAs": null
+        },
+        {
+          "type": "question",
+          "id": "q17",
+          "num": "17",
+          "statement": "Quels sont les pays d’arrivée et villes d’arrivée et hôtels ainsi que leurs nombres d’étoiles des voyages réservés les plus cher ? Donnez deux formulations.",
+          "expectedCols": 4,
+          "expectedRows": 1,
+          "expectedLabel": "4 attributs, 1 tuple",
+          "orderSensitive": false,
+          "hashesSorted": [
+            "493fdae807ccb876b9cdaa88cca15a0f50ab9212696aeed2b3ba0e1c909c6a6d"
+          ],
+          "hashOrdered": null,
+          "difficulty": 2,
+          "tags": [
+            "jointure",
+            "imbrication",
+            "calcul-vertical",
+            "extrémum"
+          ],
+          "sameAs": null
+        },
+        {
+          "type": "question",
+          "id": "q18",
+          "num": "18",
+          "statement": "Donnez, en tenant compte du nombre de personnes, le prix total des réservations du client Arnaud Peyroche.",
+          "expectedCols": 1,
+          "expectedRows": 1,
+          "expectedLabel": "1 attribut, 1 tuple (1629)",
+          "orderSensitive": false,
+          "hashesSorted": [
+            "6698afcb962a3cf752c19142641e23f74f411824749e9252baadef4540f9a229"
+          ],
+          "hashOrdered": null,
+          "difficulty": 3,
+          "tags": [
+            "jointure",
+            "imbrication",
+            "semi-jointure",
+            "calcul-vertical",
+            "calcul-horizontal",
+            "exists"
+          ],
+          "sameAs": null
+        },
+        {
+          "type": "question",
+          "id": "q19",
+          "num": "19",
+          "statement": "Donnez, le prix total des options proposées pour les voyages réservés par le client Nicolas Potier.",
+          "expectedCols": 1,
+          "expectedRows": 1,
+          "expectedLabel": "1 attribut, 1 tuple (35)",
+          "orderSensitive": false,
+          "hashesSorted": [
+            "bdb3db4f17e56fcc5d25ed6da43fc7d677e1ffb5ca2d6eb447af96a508e7ec90"
+          ],
+          "hashOrdered": null,
+          "difficulty": 3,
+          "tags": [
+            "jointure",
+            "calcul-vertical"
+          ],
+          "sameAs": null
+        }
+      ]
+    },
+    {
+      "name": "Test d’absence de données",
+      "items": [
+        {
+          "type": "instruction",
+          "text": "Formulez les requêtes suivantes de deux manières différentes, en ne faisant pas appel aux opérateurs ensemblistes."
+        },
+        {
+          "type": "question",
+          "id": "q20",
+          "num": "20",
+          "statement": "Quels sont les noms et prénoms des clients qui n’ont aucune réservation ?",
+          "expectedCols": 2,
+          "expectedRows": 11,
+          "expectedLabel": "2 attributs, 11 tuples",
+          "orderSensitive": false,
+          "hashesSorted": [
+            "efc873ae88cea5547163bc43fefc4b5ab78ea7be1c2069491b4007022d98b4a8"
+          ],
+          "hashOrdered": null,
+          "difficulty": 2,
+          "tags": [
+            "imbrication",
+            "anti-jointure"
+          ],
+          "sameAs": null
+        },
+        {
+          "type": "question",
+          "id": "q21",
+          "num": "21",
+          "statement": "Quels sont les identifiants, pays d’arrivée et ville d’arrivée des voyages qui ne sont planifiés à aucune date ?",
+          "expectedCols": 3,
+          "expectedRows": 14,
+          "expectedLabel": "3 attributs, 14 tuples",
+          "orderSensitive": false,
+          "hashesSorted": [
+            "c9ef3cbffcb563630f22f10fdb3fb39c4b83d8b75e7e0b1b8f8ef5b9a3263695"
+          ],
+          "hashOrdered": null,
+          "difficulty": 2,
+          "tags": [
+            "imbrication",
+            "anti-jointure"
+          ],
+          "sameAs": null
+        },
+        {
+          "type": "question",
+          "id": "q22",
+          "num": "22",
+          "statement": "Quels sont les pays d’arrivée et villes d’arrivée qui ne sont pas proposés au départ de Marseille ?",
+          "expectedCols": 2,
+          "expectedRows": 6,
+          "expectedLabel": "2 attributs, 6 tuples",
+          "orderSensitive": false,
+          "hashesSorted": [
+            "e365d19277101433c3c215c0d221db2c72bf665fd4acfa19f33b5854757b297f"
+          ],
+          "hashOrdered": null,
+          "difficulty": 2,
+          "tags": [
+            "imbrication",
+            "anti-jointure"
+          ],
+          "sameAs": null
+        },
+        {
+          "type": "question",
+          "id": "q23",
+          "num": "23",
+          "statement": "Quels sont les codes et libellés des options qui ne sont pas proposés dans les voyages pour Chypre ?",
+          "expectedCols": 2,
+          "expectedRows": 10,
+          "expectedLabel": "2 attributs, 10 tuples",
+          "orderSensitive": false,
+          "hashesSorted": [
+            "3f15f2ed4bfe16d3e0bacedb4e9c9cfb11060636e7c17a32017c6c4620981a2a"
+          ],
+          "hashOrdered": null,
+          "difficulty": 3,
+          "tags": [
+            "jointure",
+            "imbrication",
+            "anti-jointure"
+          ],
+          "sameAs": null
+        }
+      ]
+    }
+  ]
+}
