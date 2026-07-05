@@ -9,6 +9,8 @@
   --ok-bg: #e5f6ec; --ok-ink: #157347; --ok-border: #9bd8b4;
   --ko-bg: #fdeaea; --ko-ink: #b02a2a; --ko-border: #eeb4b4;
   --warn-bg: #fff6e0; --warn-ink: #8a6100; --warn-border: #e6cf90;
+  --tok-keyword: #0b57d0; --tok-function: #8250df; --tok-string: #0a7d33;
+  --tok-number: #b5330a; --tok-comment: #6a737d; --tok-punct: #57606a;
   --mono: ui-monospace, "SFMono-Regular", "Cascadia Code", "Fira Code", Menlo, Consolas, monospace;
   --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
@@ -20,6 +22,8 @@
     --ok-bg: #14301f; --ok-ink: #63d495; --ok-border: #2c6b45;
     --ko-bg: #351a1a; --ko-ink: #f0908f; --ko-border: #6d3130;
     --warn-bg: #33290f; --warn-ink: #e6c471; --warn-border: #6a561f;
+    --tok-keyword: #79b8ff; --tok-function: #d2a8ff; --tok-string: #7ee787;
+    --tok-number: #ffab70; --tok-comment: #8b949e; --tok-punct: #b1bac4;
   }
 }
 
@@ -88,12 +92,60 @@ body {
 .q-expected { font-style: italic; color: var(--accent); font-size: .9rem; margin: .2rem 0; }
 .q-sameas { color: var(--muted); font-size: .85rem; margin: .2rem 0; }
 
+/* Éditeur SQL : textarea transparent au-dessus d'un calque colorié.
+   Les deux calques DOIVENT partager exactement la même typographie et le même
+   modèle de boîte pour que le texte s'aligne au pixel. */
+.q-editor { position: relative; }
+.q-editor .q-input,
+.q-editor .q-highlight {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: .9rem;
+  line-height: 1.5;
+  padding: .6rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: normal;
+  tab-size: 4;
+  /* Réserve la gouttière d'ascenseur des deux côtés pour que la largeur de texte
+     reste identique que la barre de défilement soit affichée ou non (sinon le
+     retour à la ligne du calque colorié diverge de celui du textarea). */
+  scrollbar-gutter: stable;
+}
+.q-highlight {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--bg);
+  color: var(--ink);
+}
+.q-highlight code { font: inherit; white-space: inherit; overflow-wrap: inherit; }
 .q-input {
-  width: 100%; font-family: var(--mono); font-size: .9rem; padding: .6rem;
-  border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--ink);
-  resize: vertical; min-height: 4.5rem;
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  min-height: 4.5rem;
+  resize: vertical;
+  background: transparent;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  caret-color: var(--ink);
+  border-color: var(--border);
 }
 .q-input:focus { outline: 2px solid color-mix(in srgb, var(--accent) 50%, transparent); border-color: var(--accent); }
+
+/* Couleurs des jetons SQL */
+.tok-keyword  { color: var(--tok-keyword); font-weight: 600; }
+.tok-function { color: var(--tok-function); }
+.tok-string   { color: var(--tok-string); }
+.tok-number   { color: var(--tok-number); }
+.tok-comment  { color: var(--tok-comment); font-style: italic; }
+.tok-punct    { color: var(--tok-punct); }
 
 .q-actions { display: flex; align-items: center; gap: .7rem; margin: .6rem 0; }
 .run-hint { color: var(--muted); font-size: .8rem; }

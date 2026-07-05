@@ -3,6 +3,7 @@
 import { initEngine, runQuery } from "./engine.js";
 import { hashResult } from "./canon.js";
 import { makeStore, buildExport, downloadText } from "./store.js";
+import { highlightSQL } from "./highlight.js";
 
 const MAX_DISPLAY_ROWS = 50;
 
@@ -219,16 +220,32 @@ function renderQuestion(container, question) {
     card.appendChild(el("p", { class: "q-sameas", text: "Même résultat que " + question.sameAs.toUpperCase() }));
   }
 
+  // Éditeur : textarea transparent au-dessus d'un calque <pre> colorié.
   const textarea = el("textarea", {
     class: "q-input",
     attrs: { spellcheck: "false", rows: "4", placeholder: "Écrivez votre requête SQL ici…" },
   });
   textarea.value = state.answers[question.id] || "";
+  const highlightCode = el("code");
+  const highlightPre = el("pre", { class: "q-highlight", attrs: { "aria-hidden": "true" } }, [highlightCode]);
+  const editor = el("div", { class: "q-editor" }, [highlightPre, textarea]);
+
+  function syncHighlight() {
+    // Ajoute un espace final pour qu'une ligne vide terminale s'affiche comme dans le textarea.
+    highlightCode.innerHTML = highlightSQL(textarea.value + "\n");
+    highlightPre.scrollTop = textarea.scrollTop;
+    highlightPre.scrollLeft = textarea.scrollLeft;
+  }
 
   const saveDebounced = debounce(() => store.save(state), 400);
   textarea.addEventListener("input", () => {
     state.answers[question.id] = textarea.value;
+    syncHighlight();
     saveDebounced();
+  });
+  textarea.addEventListener("scroll", () => {
+    highlightPre.scrollTop = textarea.scrollTop;
+    highlightPre.scrollLeft = textarea.scrollLeft;
   });
   textarea.addEventListener("keydown", (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
@@ -240,9 +257,11 @@ function renderQuestion(container, question) {
       textarea.value = textarea.value.slice(0, s) + "    " + textarea.value.slice(en);
       textarea.selectionStart = textarea.selectionEnd = s + 4;
       state.answers[question.id] = textarea.value;
+      syncHighlight();
       saveDebounced();
     }
   });
+  syncHighlight();
 
   const runBtn = el("button", { class: "btn btn-run", text: "Exécuter ▶" });
   const hint = el("span", { class: "run-hint", text: "Ctrl/Cmd + Entrée" });
@@ -276,7 +295,7 @@ function renderQuestion(container, question) {
 
   runBtn.addEventListener("click", run);
 
-  card.appendChild(textarea);
+  card.appendChild(editor);
   card.appendChild(el("div", { class: "q-actions" }, [runBtn, hint]));
   card.appendChild(resultEl);
   card.appendChild(feedbackEl);
