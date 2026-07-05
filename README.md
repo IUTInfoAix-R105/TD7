@@ -8,11 +8,11 @@ indique si votre réponse est exacte.
 ## Utilisation
 
 - Ouvrez la page (lien GitHub Pages du dépôt).
-- Pour chaque question, écrivez votre requête SQL puis cliquez **Exécuter ▶**
+- Pour chaque question, écrivez votre requête SQL puis cliquez **Exécuter**
   (ou `Ctrl`/`Cmd` + `Entrée`).
 - Le tableau affiche votre résultat ; les pastilles indiquent si le nombre de
   colonnes, le nombre de lignes et le contenu correspondent à ce qui est attendu.
-  Un **✓ Résultat exact** confirme la bonne réponse.
+  Un **Résultat exact** confirme la bonne réponse.
 
 ## Vos réponses
 
@@ -20,7 +20,7 @@ indique si votre réponse est exacte.
   rien n'est envoyé à un serveur, et elles sont conservées entre les sessions sur
   le même navigateur/ordinateur.
 - Le bouton **Exporter .sql** télécharge un fichier contenant toutes vos réponses
-  (un bloc par question) — c'est ce fichier que vous pourrez rendre.
+  (un bloc par question) : c'est ce fichier que vous pourrez rendre.
 - Le bouton **Tout effacer** réinitialise vos réponses.
 
 ## Notes techniques

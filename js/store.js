@@ -39,20 +39,35 @@ export function makeStore(tdId) {
   return { key, load, save, clear };
 }
 
+// Remplace les caractères typographiques non tapables au clavier par leur
+// équivalent ASCII (les lettres accentuées, elles, sont conservées). Appliqué au
+// texte des commentaires de l'export .sql, destiné à être ouvert dans un éditeur
+// de code — contrairement au PDF/HTML qui gardent la typographie soignée.
+// Motifs en \uXXXX : ce fichier source reste sans caractère spécial ni invisible.
+function keyboardSafe(text) {
+  return text
+    .replace(/[\u2013\u2014]/g, "-")             // tirets demi-cadratin / cadratin
+    .replace(/\u2026/g, "...")                   // points de suspension
+    .replace(/[\u2018\u2019\u201A\u2032]/g, "'") // apostrophes / quotes simples
+    .replace(/[\u201C\u201D\u201E\u2033]/g, '"') // guillemets doubles anglais
+    .replace(/[\u00AB\u00BB]/g, '"')             // guillemets francais
+    .replace(/[\u00A0\u202F\u2009]/g, " ");      // espaces insecables / fines
+}
+
 // Construit un fichier .sql : un bloc commenté par question + la réponse (ou un
 // marqueur d'absence de réponse). L'énoncé est inséré en commentaire pour repérage.
 export function buildExport(questions, state) {
   const lines = [];
-  lines.push(`-- ${questions.tdLabel} : ${questions.title}`);
+  lines.push(`-- ${keyboardSafe(questions.tdLabel)} : ${keyboardSafe(questions.title)}`);
   const today = new Date().toISOString().slice(0, 10);
-  lines.push(`-- Export du ${today}${state.name ? ` — ${state.name}` : ""}`);
+  lines.push(`-- Export du ${today}${state.name ? ` - ${keyboardSafe(state.name)}` : ""}`);
   lines.push("");
 
   for (const section of questions.sections) {
     for (const item of section.items) {
       if (item.type !== "question") continue;
-      const stmt = (item.statement || "").replace(/\s+/g, " ").trim();
-      lines.push(`-- Q${item.num} — ${stmt}`);
+      const stmt = keyboardSafe((item.statement || "").replace(/\s+/g, " ").trim());
+      lines.push(`-- Q${item.num} - ${stmt}`);
       const answer = (state.answers[item.id] || "").trim();
       if (answer) {
         lines.push(answer.endsWith(";") ? answer : answer + ";");
