@@ -80,6 +80,19 @@ export function buildExport(questions, state) {
   return lines.join("\n");
 }
 
+// Nom du fichier exporté : inclut le nom de l'étudiant s'il est renseigné.
+// Le nom est « slugifié » (accents retirés, minuscules, séparateurs → tirets) pour
+// rester un nom de fichier valide sur tous les systèmes.
+export function exportFilename(tdId, name) {
+  const slug = (name || "")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // retire les diacritiques
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")                        // tout le reste -> tiret
+    .replace(/^-+|-+$/g, "")                            // pas de tiret en bord
+    .slice(0, 60);
+  return slug ? `${tdId}-reponses-${slug}.sql` : `${tdId}-reponses.sql`;
+}
+
 export function downloadText(filename, text) {
   const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
   const url = URL.createObjectURL(blob);

@@ -2,7 +2,7 @@
 
 import { initEngine, runQuery } from "./engine.js";
 import { hashResult } from "./canon.js";
-import { makeStore, buildExport, downloadText } from "./store.js";
+import { makeStore, buildExport, downloadText, exportFilename } from "./store.js";
 import { highlightSQL } from "./highlight.js";
 
 const MAX_DISPLAY_ROWS = 50;
@@ -46,7 +46,7 @@ function renderHeader(root) {
   const exportBtn = el("button", { class: "btn", text: "Exporter .sql" });
   exportBtn.addEventListener("click", () => {
     const sql = buildExport(questions, state);
-    downloadText(`${questions.tdId}-reponses.sql`, sql);
+    downloadText(exportFilename(questions.tdId, state.name), sql);
   });
 
   const resetBtn = el("button", { class: "btn btn-danger", text: "Tout effacer" });
