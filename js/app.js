@@ -3,12 +3,18 @@
 import { initEngine, runQuery } from "./engine.js";
 import { hashResult } from "./canon.js";
 import { makeStore, buildExport, downloadText, exportFilename } from "./store.js";
-import { highlightSQL } from "./highlight.js";
+import { highlightSQL, highlightAlgebra } from "./highlight.js";
+import { compileAlgebra, AlgebraError } from "./algebra.js";
 
 const MAX_DISPLAY_ROWS = 50;
 
 let questions = null;
 let store = null;
+let mode = "sql";       // "sql" | "algebra"
+let catalog = null;     // schéma des tables (mode algèbre)
+// Option enseignant (masquée aux étudiants) : ?sql dans l'URL affiche, en mode
+// algèbre, le SQL compilé depuis la saisie de l'étudiant (jamais la correction).
+let showSql = false;
 let state = { answers: {}, name: "" };
 const cards = new Map(); // id -> { statusEl, resultEl, feedbackEl }
 
@@ -43,10 +49,11 @@ function renderHeader(root) {
     store.save(state);
   });
 
-  const exportBtn = el("button", { class: "btn", text: "Exporter .sql" });
+  // En mode algèbre, l'export est un fichier texte .algebre (pas .sql).
+  const exportExt = mode === "algebra" ? "algebre" : "sql";
+  const exportBtn = el("button", { class: "btn", text: `Exporter .${exportExt}` });
   exportBtn.addEventListener("click", () => {
-    const sql = buildExport(questions, state);
-    downloadText(exportFilename(questions.tdId, state.name), sql);
+    downloadText(exportFilename(questions.tdId, state.name, exportExt), buildExport(questions, state));
   });
 
   const resetBtn = el("button", { class: "btn btn-danger", text: "Tout effacer" });
@@ -76,6 +83,17 @@ function renderHeader(root) {
 // ── Panneau schéma ──────────────────────────────────────────────────────────
 
 async function renderSchemaPanel(root) {
+  const rel = questions.database && questions.database.relationalSchema;
+  // Mode algèbre : afficher le schéma relationnel (notation du cours), pas le SQL.
+  if (mode === "algebra" && Array.isArray(rel) && rel.length) {
+    const details = el("details", { class: "schema-panel", attrs: { open: "" } });
+    details.appendChild(el("summary", { text: "Schéma relationnel" }));
+    const box = el("div", { class: "schema-rel" });
+    for (const line of rel) box.appendChild(el("div", { class: "schema-rel-line", html: line }));
+    details.appendChild(box);
+    root.appendChild(details);
+    return;
+  }
   const details = el("details", { class: "schema-panel" });
   details.appendChild(el("summary", { text: "Schéma de la base de données" }));
   const pre = el("pre", { class: "schema-sql", text: "Chargement…" });
@@ -87,6 +105,111 @@ async function renderSchemaPanel(root) {
   } catch {
     pre.textContent = "(schéma indisponible)";
   }
+}
+
+// Rappel de syntaxe (mode algèbre) — panneau repliable pour les étudiants.
+function renderSyntaxPanel(root) {
+  const details = el("details", { class: "schema-panel syntax-panel" });
+  details.appendChild(el("summary", { text: "Rappel : syntaxe de l'algèbre relationnelle" }));
+  const body = el("div", { class: "syntax-body" });
+  body.innerHTML = `
+    <p>Une requête est une <strong>suite d'affectations</strong> (une par ligne, avec <code>:=</code>) ;
+       la <strong>dernière relation</strong> définie est la réponse. Exemple :</p>
+    <pre>R1 := SELECTION (Avion / capacite &gt; 350)
+R2 := PROJECTION (R1 / numAv, nomAv)</pre>
+    <table class="syntax-table"><thead><tr><th>Opérateur</th><th>Forme</th></tr></thead><tbody>
+      <tr><td>SELECTION</td><td>SELECTION (R / <em>condition</em>)</td></tr>
+      <tr><td>PROJECTION</td><td>PROJECTION (R / attr1, attr2, …)</td></tr>
+      <tr><td>RENOMMAGE</td><td>RENOMMAGE (R / ancien -&gt; nouveau, …)</td></tr>
+      <tr><td>UNION · INTERSECTION · DIFFERENCE</td><td>UNION (R1, R2)</td></tr>
+      <tr><td>JOINTURE</td><td>JOINTURE (R1, R2 / attrG <em>op</em> attrD)</td></tr>
+      <tr><td>JOINTURE_NATURELLE</td><td>JOINTURE_NATURELLE (R1, R2)</td></tr>
+      <tr><td>DIVISION</td><td>DIVISION (R1, R2)</td></tr>
+    </tbody></table>
+    <p class="syntax-note">
+      Conditions : comparateurs <code>=</code> <code>&lt;&gt;</code> <code>&lt;</code> <code>&gt;</code>
+      <code>&lt;=</code> <code>&gt;=</code> ; connecteurs <code>ET</code> / <code>OU</code> / <code>NON</code> ;
+      chaînes entre apostrophes <code>'TEXTE'</code> ; heures <code>HH:MM</code> ;
+      commentaire <code>--</code> en fin de ligne. Opérateurs en <strong>MAJUSCULES sans accent</strong>.
+    </p>`;
+  details.appendChild(body);
+  root.appendChild(details);
+}
+
+// Section « Comment fonctionne cette page ? » + terrain d'essai (sans évaluation).
+function renderHowItWorks(root) {
+  const isAlg = mode === "algebra";
+  const what = isAlg ? "votre expression en algèbre relationnelle" : "votre requête SQL";
+  const details = el("details", { class: "schema-panel howto-panel" });
+  details.appendChild(el("summary", { text: "Comment fonctionne cette page ?" }));
+  const body = el("div", { class: "howto-body" });
+  const intro = el("div", { class: "howto-text" });
+  intro.innerHTML = `
+    <p>Pour chaque question, écrivez ${what} puis cliquez <strong>Exécuter</strong>
+       (ou <code>Ctrl</code>/<code>Cmd</code> + <code>Entrée</code>).
+       ${isAlg ? "Elle est traduite en SQL et exécutée" : "Elle est exécutée"} sur la base,
+       et le résultat s'affiche dans une table.</p>
+    <p>Un retour automatique compare votre résultat au résultat attendu (nombre de colonnes,
+       de lignes et contenu) et affiche <strong>✓ Résultat exact</strong> si tout correspond —
+       <em>sans jamais afficher la correction</em>.</p>
+    <p>La base est <strong>réinitialisée à chaque exécution</strong> : vous pouvez tout tester
+       sans risque. Vos réponses restent dans ce navigateur ; le bouton
+       <strong>Exporter .${isAlg ? "algebre" : "sql"}</strong> les télécharge pour les rendre.</p>
+    ${isAlg ? "<p>La notation de référence est imposée (voir le rappel de syntaxe) ; toute erreur est signalée précisément avec le numéro de ligne.</p>" : ""}`;
+  body.appendChild(intro);
+
+  // ── Terrain d'essai ────────────────────────────────────────────────────────
+  body.appendChild(el("p", { class: "howto-pg-title", text: "Terrain d'essai (sans évaluation)" }));
+  body.appendChild(el("p", { class: "howto-pg-sub", text: isAlg
+    ? "Testez n'importe quelle expression : le résultat s'affiche, sans jugement de correction."
+    : "Testez n'importe quelle requête : le résultat s'affiche, sans jugement de correction." }));
+
+  const pgKey = `webtd:${questions.tdId}:playground`;
+  const textarea = el("textarea", { class: "q-input", attrs: { spellcheck: "false", rows: "5",
+    placeholder: isAlg ? "Écrivez une expression algébrique à tester…" : "Écrivez une requête SQL à tester…" } });
+  try { textarea.value = localStorage.getItem(pgKey) || ""; } catch { /* ignore */ }
+  const code = el("code");
+  const pre = el("pre", { class: "q-highlight", attrs: { "aria-hidden": "true" } }, [code]);
+  const editor = el("div", { class: "q-editor" }, [pre, textarea]);
+  const highlight = isAlg ? highlightAlgebra : highlightSQL;
+  const sync = () => { code.innerHTML = highlight(textarea.value + "\n"); pre.scrollTop = textarea.scrollTop; pre.scrollLeft = textarea.scrollLeft; };
+  const savePg = debounce(() => { try { localStorage.setItem(pgKey, textarea.value); } catch { /* ignore */ } }, 400);
+  const resultEl = el("div", { class: "q-result" });
+
+  function runPg() {
+    const input = textarea.value.trim();
+    if (!input) { resultEl.replaceChildren(); return; }
+    let sql = input;
+    if (isAlg) {
+      try { sql = compileAlgebra(input, catalog).sql; }
+      catch (e) { resultEl.replaceChildren(el("div", { class: "sql-error", text: String(e && e.message || e) })); return; }
+    }
+    try { resultEl.replaceChildren(renderTable(runQuery(sql))); }
+    catch (e) { resultEl.replaceChildren(el("div", { class: "sql-error", text: String(e && e.message || e) })); }
+  }
+
+  textarea.addEventListener("input", () => { sync(); savePg(); });
+  textarea.addEventListener("scroll", () => { pre.scrollTop = textarea.scrollTop; pre.scrollLeft = textarea.scrollLeft; });
+  textarea.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); runPg(); }
+    else if (e.key === "Tab") {
+      e.preventDefault();
+      const s = textarea.selectionStart, en = textarea.selectionEnd;
+      textarea.value = textarea.value.slice(0, s) + "    " + textarea.value.slice(en);
+      textarea.selectionStart = textarea.selectionEnd = s + 4;
+      sync(); savePg();
+    }
+  });
+  sync();
+
+  const runBtn = el("button", { class: "btn btn-run", text: "Exécuter ▶" });
+  runBtn.addEventListener("click", runPg);
+  body.appendChild(editor);
+  body.appendChild(el("div", { class: "q-actions" }, [runBtn, el("span", { class: "run-hint", text: "Ctrl/Cmd + Entrée" })]));
+  body.appendChild(resultEl);
+
+  details.appendChild(body);
+  root.appendChild(details);
 }
 
 // ── Rendu d'une table de résultat ───────────────────────────────────────────
@@ -221,18 +344,22 @@ function renderQuestion(container, question) {
   }
 
   // Éditeur : textarea transparent au-dessus d'un calque <pre> colorié.
+  const placeholder = mode === "algebra"
+    ? "Écrivez votre expression algébrique ici…"
+    : "Écrivez votre requête SQL ici…";
   const textarea = el("textarea", {
     class: "q-input",
-    attrs: { spellcheck: "false", rows: "4", placeholder: "Écrivez votre requête SQL ici…" },
+    attrs: { spellcheck: "false", rows: "4", placeholder },
   });
   textarea.value = state.answers[question.id] || "";
   const highlightCode = el("code");
   const highlightPre = el("pre", { class: "q-highlight", attrs: { "aria-hidden": "true" } }, [highlightCode]);
   const editor = el("div", { class: "q-editor" }, [highlightPre, textarea]);
+  const highlight = mode === "algebra" ? highlightAlgebra : highlightSQL;
 
   function syncHighlight() {
     // Ajoute un espace final pour qu'une ligne vide terminale s'affiche comme dans le textarea.
-    highlightCode.innerHTML = highlightSQL(textarea.value + "\n");
+    highlightCode.innerHTML = highlight(textarea.value + "\n");
     highlightPre.scrollTop = textarea.scrollTop;
     highlightPre.scrollLeft = textarea.scrollLeft;
   }
@@ -267,10 +394,16 @@ function renderQuestion(container, question) {
   const hint = el("span", { class: "run-hint", text: "Ctrl/Cmd + Entrée" });
   const resultEl = el("div", { class: "q-result" });
   const feedbackEl = el("div", { class: "q-feedback" });
+  // Encart enseignant « SQL généré » (uniquement si ?sql en mode algèbre).
+  let sqlPre = null, sqlBox = null;
+  if (showSql) {
+    sqlPre = el("pre", { class: "sql-generated-pre" });
+    sqlBox = el("details", { class: "sql-generated" }, [el("summary", { text: "SQL généré (enseignant)" }), sqlPre]);
+  }
 
   async function run() {
-    const sql = textarea.value.trim();
-    if (!sql) {
+    const input = textarea.value.trim();
+    if (!input) {
       resultEl.replaceChildren();
       feedbackEl.replaceChildren();
       status.textContent = "";
@@ -279,6 +412,21 @@ function renderQuestion(container, question) {
     state.answers[question.id] = textarea.value;
     store.save(state);
     try {
+      let sql = input;
+      if (mode === "algebra") {
+        try {
+          sql = compileAlgebra(input, catalog).sql;
+          if (sqlPre) sqlPre.textContent = sql;
+        } catch (e) {
+          if (sqlPre) sqlPre.textContent = "(erreur de compilation)";
+          resultEl.replaceChildren();
+          feedbackEl.replaceChildren(el("div", { class: "feedback feedback-error" }, [
+            el("span", { class: "chip chip-ko", text: "✗ " + String(e && e.message || e) }),
+          ]));
+          status.textContent = "";
+          return;
+        }
+      }
       const result = runQuery(sql);
       resultEl.replaceChildren(renderTable(result));
       const g = await grade(question, result);
@@ -299,9 +447,19 @@ function renderQuestion(container, question) {
   card.appendChild(el("div", { class: "q-actions" }, [runBtn, hint]));
   card.appendChild(resultEl);
   card.appendChild(feedbackEl);
+  if (sqlBox) card.appendChild(sqlBox);
   container.appendChild(card);
 
   cards.set(question.id, { status });
+}
+
+// Question de cours : énoncé seul, sans éditeur ni auto-évaluation.
+function renderTheory(container, question) {
+  const card = el("section", { class: "question-card question-theory", attrs: { id: question.id } });
+  card.appendChild(el("div", { class: "q-head" }, [el("span", { class: "q-num", text: "Q" + question.num })]));
+  card.appendChild(el("p", { class: "q-statement", text: question.statement }));
+  card.appendChild(el("p", { class: "q-theory-note", text: "Question de cours — pas d'auto-évaluation." }));
+  container.appendChild(card);
 }
 
 // ── Progression ─────────────────────────────────────────────────────────────
@@ -328,11 +486,16 @@ async function main() {
     root.appendChild(el("p", { class: "fatal", text: "Impossible de charger questions.json." }));
     return;
   }
+  mode = questions.mode || "sql";
+  catalog = (questions.database && questions.database.catalog) || null;
+  showSql = mode === "algebra" && new URLSearchParams(location.search).has("sql");
   store = makeStore(questions.tdId);
   state = store.load();
 
   renderHeader(root);
   await renderSchemaPanel(root);
+  if (mode === "algebra") renderSyntaxPanel(root);
+  renderHowItWorks(root);
 
   const main = el("main", { class: "sections" });
   for (const section of questions.sections) {
@@ -340,7 +503,10 @@ async function main() {
     for (const item of section.items) {
       if (item.type === "instruction") main.appendChild(el("p", { class: "instruction", text: item.text }));
       else if (item.type === "text") main.appendChild(el("p", { class: "free-text", text: item.text }));
-      else if (item.type === "question") { totalQuestions++; renderQuestion(main, item); }
+      else if (item.type === "question") {
+        if (item.expectedCols === null) { renderTheory(main, item); }   // question de cours
+        else { totalQuestions++; renderQuestion(main, item); }
+      }
     }
   }
   root.appendChild(main);

@@ -57,3 +57,48 @@ export function highlightSQL(code) {
   }
   return out;
 }
+
+// ── Coloration de l'algèbre relationnelle (notation de référence) ────────────
+
+const ALGEBRA_KEYWORDS = new Set([
+  "SELECTION", "PROJECTION", "RENOMMAGE", "UNION", "INTERSECTION",
+  "DIFFERENCE", "JOINTURE", "JOINTURE_NATURELLE", "DIVISION",
+  "ET", "OU", "NON",
+]);
+
+const ALGEBRA_RE = new RegExp(
+  "(--[^\\n]*)" +                          // 1 commentaire
+  "|('(?:[^'\\n])*')" +                    // 2 chaîne
+  "|(:=|->)" +                             // 3 affectation / flèche
+  "|(<=|>=|<>|=|<|>)" +                    // 4 comparateur
+  "|(\\b\\d{1,2}:\\d{2}\\b)" +             // 5 temps HH:MM
+  "|(\\b\\d+(?:\\.\\d+)?\\b)" +            // 6 nombre
+  "|([A-Za-z_\\u00C0-\\u024F][A-Za-z0-9_\\u00C0-\\u024F.]*)" + // 7 mot (mot-clé / relation / attribut)
+  "|([(),/])" +                            // 8 ponctuation
+  "|(\\s+)",                               // 9 espaces
+  "g"
+);
+
+export function highlightAlgebra(code) {
+  let out = "";
+  ALGEBRA_RE.lastIndex = 0;
+  let m, last = 0;
+  while ((m = ALGEBRA_RE.exec(code)) !== null) {
+    if (m.index > last) out += escapeHtml(code.slice(last, m.index)); // caractères non reconnus
+    last = ALGEBRA_RE.lastIndex;
+    if (m[1] !== undefined) out += `<span class="tok-comment">${escapeHtml(m[1])}</span>`;
+    else if (m[2] !== undefined) out += `<span class="tok-string">${escapeHtml(m[2])}</span>`;
+    else if (m[3] !== undefined) out += `<span class="tok-punct">${escapeHtml(m[3])}</span>`;
+    else if (m[4] !== undefined) out += `<span class="tok-punct">${escapeHtml(m[4])}</span>`;
+    else if (m[5] !== undefined) out += `<span class="tok-number">${escapeHtml(m[5])}</span>`;
+    else if (m[6] !== undefined) out += `<span class="tok-number">${escapeHtml(m[6])}</span>`;
+    else if (m[7] !== undefined) {
+      const w = m[7];
+      if (ALGEBRA_KEYWORDS.has(w)) out += `<span class="tok-keyword">${escapeHtml(w)}</span>`;
+      else out += escapeHtml(w);
+    } else if (m[8] !== undefined) out += `<span class="tok-punct">${escapeHtml(m[8])}</span>`;
+    else out += m[9]; // espaces
+  }
+  if (last < code.length) out += escapeHtml(code.slice(last));
+  return out;
+}

@@ -1,7 +1,7 @@
 {
   "formatVersion": 1,
   "tdId": "r1.05-td7",
-  "tdLabel": "R1.05 — TD7",
+  "tdLabel": "R1.05 - TD7",
   "title": "Requêtes avec SQL",
   "intro": "Formulez, en SQL, sur la base de données exemple, les requêtes d'interrogation suivantes.",
   "database": {
@@ -14,8 +14,8 @@
     "specVersion": 1
   },
   "generated": {
-    "at": "2026-07-05T21:18:43Z",
-    "documentsVersion": "v0.1.6"
+    "at": "2026-07-06T09:03:04Z",
+    "documentsVersion": "944ebab"
   },
   "sections": [
     {
