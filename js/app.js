@@ -466,7 +466,7 @@ function renderTheory(container, question) {
   const card = el("section", { class: "question-card question-theory", attrs: { id: question.id } });
   card.appendChild(el("div", { class: "q-head" }, [el("span", { class: "q-num", text: "Q" + question.num })]));
   card.appendChild(el("p", { class: "q-statement", text: question.statement }));
-  card.appendChild(el("p", { class: "q-theory-note", text: "Question de cours - pas d'auto-évaluation." }));
+  card.appendChild(el("p", { class: "q-theory-note", text: question.theoryNote || "Question de cours - pas d'auto-évaluation." }));
   container.appendChild(card);
 }
 
