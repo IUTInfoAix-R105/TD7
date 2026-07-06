@@ -1,4 +1,4 @@
-// store.js — persistance des réponses (localStorage) et export .sql.
+// store.js - persistance des réponses (localStorage) et export .sql.
 //
 // Les réponses restent dans le navigateur de l'étudiant : rien n'est envoyé à un
 // serveur. La clé inclut l'identifiant du TD et une version de schéma (v1) : ne la
@@ -42,7 +42,7 @@ export function makeStore(tdId) {
 // Remplace les caractères typographiques non tapables au clavier par leur
 // équivalent ASCII (les lettres accentuées, elles, sont conservées). Appliqué au
 // texte des commentaires de l'export .sql, destiné à être ouvert dans un éditeur
-// de code — contrairement au PDF/HTML qui gardent la typographie soignée.
+// de code - contrairement au PDF/HTML qui gardent la typographie soignée.
 // Motifs en \uXXXX : ce fichier source reste sans caractère spécial ni invisible.
 function keyboardSafe(text) {
   return text

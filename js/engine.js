@@ -1,4 +1,4 @@
-// engine.js — encapsule sql.js (SQLite WASM).
+// engine.js - encapsule sql.js (SQLite WASM).
 //
 // La base « maître » est construite une fois depuis data/schema.sql + data/insert.sql,
 // puis exportée en instantané (snapshot). Chaque exécution de requête part d'une

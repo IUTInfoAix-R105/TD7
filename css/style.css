@@ -49,6 +49,13 @@ body {
   padding: .2rem .6rem; border-radius: 999px; white-space: nowrap;
 }
 .intro { color: var(--muted); margin: .6rem 0; }
+.subject-pdf { margin: .6rem 0; }
+.subject-pdf a {
+  display: inline-block; text-decoration: none; font-size: .9rem;
+  color: var(--accent); border: 1px solid var(--border); border-radius: 6px;
+  padding: .35rem .7rem;
+}
+.subject-pdf a:hover { border-color: var(--accent); }
 .hint { color: var(--muted); font-size: .85rem; margin: .4rem 0 0; }
 .header-actions { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; margin-top: .8rem; }
 .name-input {

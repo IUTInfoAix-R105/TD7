@@ -1,6 +1,6 @@
-// algebra.js — compilateur d'algèbre relationnelle (notation du cours) vers SQL SQLite.
+// algebra.js - compilateur d'algèbre relationnelle (notation du cours) vers SQL SQLite.
 //
-// Notation de référence (STRICTE — voir docs/algebre-syntaxe.md) :
+// Notation de référence (STRICTE - voir docs/algebre-syntaxe.md) :
 //   - une affectation par ligne : `Rnom := EXPR`
 //   - opérateurs en MAJUSCULES sans accent : SELECTION, PROJECTION, RENOMMAGE,
 //     UNION, INTERSECTION, DIFFERENCE, JOINTURE, DIVISION
@@ -10,7 +10,7 @@
 //   - commentaires : -- jusqu'en fin de ligne ; la dernière relation affectée = réponse
 //
 // compileAlgebra(programText, catalog) -> { sql, finalSchema } ; lève AlgebraError.
-// Utilisé au navigateur (app.js) ET côté Node (générateur/vérificateur) — source unique.
+// Utilisé au navigateur (app.js) ET côté Node (générateur/vérificateur) - source unique.
 
 export class AlgebraError extends Error {
   constructor(message, line) {
@@ -441,7 +441,7 @@ export function compileAlgebra(programText, catalog) {
     last = entry;
   }
 
-  // SELECT final : renomme c{i} vers les noms d'attributs (dédupliqués — cosmétique).
+  // SELECT final : renomme c{i} vers les noms d'attributs (dédupliqués - cosmétique).
   const seen = new Map();
   const finalCols = last.schema.map((c, i) => {
     let nm = c.name;

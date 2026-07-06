@@ -1,4 +1,4 @@
-// highlight.js — coloration syntaxique SQL minimale, sans dépendance.
+// highlight.js - coloration syntaxique SQL minimale, sans dépendance.
 //
 // Produit du HTML échappé où chaque jeton est enveloppé dans un <span class="tok-…">.
 // Utilisé comme calque affiché DERRIÈRE un <textarea> transparent (voir app.js) :

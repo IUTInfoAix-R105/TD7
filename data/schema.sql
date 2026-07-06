@@ -1,4 +1,4 @@
--- Voyages — Schéma adapté pour PostgreSQL/SQLite
+-- Voyages - Schéma adapté pour PostgreSQL/SQLite
 -- Source : s47-td7-intension-et-extension-voyages.sql (Oracle V1.6.0)
 
 DROP TABLE IF EXISTS Reservation;

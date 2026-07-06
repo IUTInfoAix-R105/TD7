@@ -13,10 +13,6 @@
     "algo": "sha256",
     "specVersion": 1
   },
-  "generated": {
-    "at": "2026-07-06T09:03:04Z",
-    "documentsVersion": "944ebab"
-  },
   "sections": [
     {
       "name": "Expression des projections et sélections",
@@ -525,5 +521,6 @@
         }
       ]
     }
-  ]
+  ],
+  "subjectPdf": "sujet.pdf"
 }

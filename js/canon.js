@@ -1,4 +1,4 @@
-// canon.js — canonicalisation des résultats SQL et hash SHA-256.
+// canon.js - canonicalisation des résultats SQL et hash SHA-256.
 //
 // Ce fichier est la moitié JavaScript d'un CONTRAT partagé avec Python
 // (scripts/webtd_canon.py). Les deux implémentations doivent produire des
@@ -6,10 +6,10 @@
 //
 // Il est utilisé tel quel :
 //   - dans le navigateur (module ES importé par app.js) ;
-//   - dans Node ≥ 18 par le vérificateur (scripts/verify-web-td.mjs) —
+//   - dans Node ≥ 18 par le vérificateur (scripts/verify-web-td.mjs) -
 //     `crypto.subtle` et `TextEncoder` y sont des globales.
 //
-// Contrat (voir webtd_canon.py — toute modification doit être répercutée) :
+// Contrat (voir webtd_canon.py - toute modification doit être répercutée) :
 //   Séparateurs : US=\x1f (cellules), RS=\x1e (lignes), GS=\x1d (en-tête/corps).
 //   canon_cell :
 //     NULL          -> "\x00N"

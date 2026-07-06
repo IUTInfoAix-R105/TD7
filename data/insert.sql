@@ -1,4 +1,4 @@
--- Voyages — Données de test pour PostgreSQL/SQLite
+-- Voyages - Données de test pour PostgreSQL/SQLite
 -- Dates converties depuis TO_DATE Oracle vers le format ISO 'YYYY-MM-DD'
 
 -- Table Voyage
