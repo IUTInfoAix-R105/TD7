@@ -1,9 +1,11 @@
-# TP SQL en ligne
+# R1.05 - TD7 - Requêtes avec SQL
 
-Page web permettant de réaliser un TP de bases de données **entièrement dans le
-navigateur** : une base SQLite (compilée en WebAssembly) exécute vos requêtes
-côté client, le résultat s'affiche dans une table, et un retour automatique vous
-indique si votre réponse est exacte.
+TP de bases de données de l'IUT d'Aix-Marseille (ressource R1.05, Introduction aux bases de données et SQL).
+
+- **[Faire le TP dans le navigateur](https://iutinfoaix-r105.github.io/TD7/)**
+- [Sujet PDF](sujet.pdf)
+
+Ce dépôt est généré automatiquement depuis le dépôt [Documents](https://github.com/IUTInfoAix-R105-R206/Documents) : toute modification manuelle sera écrasée à la prochaine publication.
 
 ## Utilisation
 
