@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "tdId": "r1.05-td7",
   "tdLabel": "R1.05 - TD7",
-  "title": "Requêtes avec SQL",
+  "title": "Interrogation en SQL interprété",
   "intro": "Formulez, en SQL, sur la base de données exemple, les requêtes d'interrogation suivantes.",
   "database": {
     "name": "voyages",
@@ -80,7 +80,7 @@
           "type": "question",
           "id": "q4",
           "num": "4",
-          "statement": "Donnez, triés par ordre décroissant du numéro de client, les numéros, noms, prénoms, code postaux et villes des clients n'habitant ni Paris ni Marseille.",
+          "statement": "Donnez, triés par ordre décroissant du numéro de client, les numéros, noms, prénoms, codes postaux et villes des clients n'habitant ni Paris ni Marseille.",
           "expectedCols": 5,
           "expectedRows": 8,
           "expectedLabel": "5 attributs, 8 tuples",
@@ -124,7 +124,7 @@
       "items": [
         {
           "type": "instruction",
-          "text": "Quand cela possible, formulez les requêtes suivantes de toutes les manières différentes."
+          "text": "Quand cela est possible, formulez les requêtes suivantes de toutes les manières différentes."
         },
         {
           "type": "question",
@@ -174,7 +174,7 @@
           "type": "question",
           "id": "q8",
           "num": "8",
-          "statement": "Quelles sont les libellés des options proposées pour le voyage d'identifiant 862 ?",
+          "statement": "Quels sont les libellés des options proposées pour le voyage d'identifiant 862 ?",
           "expectedCols": 1,
           "expectedRows": 2,
           "expectedLabel": "1 attribut, 2 tuples",
@@ -196,7 +196,7 @@
           "type": "question",
           "id": "q9",
           "num": "9",
-          "statement": "Quels sont les libellés d’option proposées pour les voyages réservés par le client Thomas Jarolim ?",
+          "statement": "Quels sont les libellés d’options proposées pour les voyages réservés par le client Thomas Jarolim ?",
           "expectedCols": 1,
           "expectedRows": 6,
           "expectedLabel": "1 attribut, 6 tuples",
@@ -325,13 +325,13 @@
           "type": "question",
           "id": "q15",
           "num": "15",
-          "statement": "Donnez les dates de départ et les dates de retour pour les voyages réservés d’identifiant 122.",
+          "statement": "Donnez les dates de départ et les dates de retour pour les voyages planifiés d’identifiant 122.",
           "expectedCols": 2,
           "expectedRows": 10,
           "expectedLabel": "2 attributs, 10 tuples",
           "orderSensitive": false,
           "hashesSorted": [
-            "cce6633030734248975f4c961271f9d4812c26a8d1c8c2bd91891c559f08b0f9"
+            "ae365df1992a6e00dae13f74427bb680dbbc84c333b7690dcebd81a693b4a35a"
           ],
           "hashOrdered": null,
           "difficulty": 2,
@@ -367,7 +367,7 @@
           "type": "question",
           "id": "q17",
           "num": "17",
-          "statement": "Quels sont les pays d’arrivée et villes d’arrivée et hôtels ainsi que leurs nombres d’étoiles des voyages réservés les plus cher ? Donnez deux formulations.",
+          "statement": "Quels sont les pays d’arrivée et villes d’arrivée et hôtels ainsi que leurs nombres d’étoiles des voyages réservés les plus chers ? Donnez deux formulations.",
           "expectedCols": 4,
           "expectedRows": 1,
           "expectedLabel": "4 attributs, 1 tuple",
@@ -413,7 +413,7 @@
           "type": "question",
           "id": "q19",
           "num": "19",
-          "statement": "Donnez, le prix total des options proposées pour les voyages réservés par le client Nicolas Potier.",
+          "statement": "Donnez le prix total des options proposées pour les voyages réservés par le client Nicolas Potier.",
           "expectedCols": 1,
           "expectedRows": 1,
           "expectedLabel": "1 attribut, 1 tuple (35)",
@@ -464,11 +464,11 @@
           "num": "21",
           "statement": "Quels sont les identifiants, pays d’arrivée et ville d’arrivée des voyages qui ne sont planifiés à aucune date ?",
           "expectedCols": 3,
-          "expectedRows": 14,
-          "expectedLabel": "3 attributs, 14 tuples",
+          "expectedRows": 8,
+          "expectedLabel": "3 attributs, 8 tuples",
           "orderSensitive": false,
           "hashesSorted": [
-            "c9ef3cbffcb563630f22f10fdb3fb39c4b83d8b75e7e0b1b8f8ef5b9a3263695"
+            "24a8bae3dc991637d08b2db8c033d93ac7c97e2ddf839147dbdadc2ecc383aa2"
           ],
           "hashOrdered": null,
           "difficulty": 2,
@@ -502,7 +502,7 @@
           "type": "question",
           "id": "q23",
           "num": "23",
-          "statement": "Quels sont les codes et libellés des options qui ne sont pas proposés dans les voyages pour Chypre ?",
+          "statement": "Quels sont les codes et libellés des options qui ne sont pas proposées dans les voyages pour Chypre ?",
           "expectedCols": 2,
           "expectedRows": 10,
           "expectedLabel": "2 attributs, 10 tuples",
